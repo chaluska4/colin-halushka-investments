@@ -1,0 +1,9 @@
+fastapi
+uvicorn[standard]
+httpx
+sqlalchemy
+pydantic
+bcrypt
+python-jose[cryptography]
+python-dotenv
+slowapi

@@ -1,0 +1,6 @@
+.env
+*.env
+stock_portfolio.db
+__pycache__/
+*.pyc
+*.pyo
