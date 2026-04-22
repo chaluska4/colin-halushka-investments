@@ -1,13 +1,12 @@
 from pathlib import Path
 from dotenv import load_dotenv
 
-# Load .env from the backend directory
+# Load .env from the backend directory (no-op in production where env vars are injected)
 _BACKEND_DIR = Path(__file__).resolve().parent
 load_dotenv(_BACKEND_DIR / ".env")
 
 import logging
 import os
-import sys
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s %(name)s %(levelname)s %(message)s")
 
@@ -18,16 +17,10 @@ from fastapi.responses import JSONResponse
 from slowapi import _rate_limit_exceeded_handler
 from slowapi.errors import RateLimitExceeded
 
-from backend.limiter import limiter
-
-# Ensure local `uvicorn main:app` works from the backend directory.
-PROJECT_ROOT = Path(__file__).resolve().parent.parent
-if str(PROJECT_ROOT) not in sys.path:
-    sys.path.insert(0, str(PROJECT_ROOT))
-
-from backend import models
-from backend.database import engine
-from backend.routes import (
+from .limiter import limiter
+from . import models
+from .database import engine
+from .routes import (
     analytics_router,
     auth_router,
     holdings_router,
@@ -84,7 +77,7 @@ def validate_secret_key():
 
 @app.on_event("startup")
 def log_market_data_config():
-    from backend.services.market_data import get_provider, FinnhubProvider
+    from .services.market_data import get_provider, FinnhubProvider
     api_key_present = bool(os.getenv("FINNHUB_API_KEY"))
     provider = get_provider()
     provider_name = "FinnhubProvider" if isinstance(provider, FinnhubProvider) else "StubProvider"
