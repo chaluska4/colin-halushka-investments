@@ -42,9 +42,25 @@ app = FastAPI(
 app.state.limiter = limiter
 app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
 
+FRONTEND_URL = os.getenv("FRONTEND_URL", "http://localhost:3000")
+
+allowed_origins = [
+    "http://localhost:3000",
+    "http://127.0.0.1:3000",
+    FRONTEND_URL,
+]
+
+# Also add www version automatically
+if FRONTEND_URL.startswith("https://"):
+    domain = FRONTEND_URL.replace("https://", "")
+    allowed_origins.append(f"https://www.{domain}")
+elif FRONTEND_URL.startswith("http://"):
+    domain = FRONTEND_URL.replace("http://", "")
+    allowed_origins.append(f"http://www.{domain}")
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[os.getenv("FRONTEND_URL", "http://localhost:3000")],
+    allow_origins=allowed_origins,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
