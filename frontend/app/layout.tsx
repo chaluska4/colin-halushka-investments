@@ -5,7 +5,13 @@ import "./globals.css";
 
 export const metadata: Metadata = {
   title: "Colin Haluska Investments",
-  description: "Paper trading platform"
+  description: "Paper trading platform",
+  icons: {
+    icon: [
+      { url: "/favicon.svg", type: "image/svg+xml" },
+    ],
+    apple: "/favicon.svg",
+  },
 };
 
 export default function RootLayout({
@@ -13,6 +19,10 @@ export default function RootLayout({
 }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="en">
+      <head>
+        <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+        <link rel="apple-touch-icon" href="/favicon.svg" />
+      </head>
       <body>
         <InteractiveBubbleBackground />
         <Navbar />
